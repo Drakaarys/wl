@@ -13,7 +13,7 @@
       <div class="col-lg-6 order-2 order-lg-1 d-flex" style="margin-top: 15px;">
         <div class="card-body">
           <ul class="list-unstyled">
-            <li>Owned by: <%= listing.owner.username %></li><br>
+            <li>Owned by: <%= listing.owner ? listing.owner.username : 'Unknown' %></li><br>
             <li><%= listing.description %></li><br>
             <li>Price: <%= listing.price.toLocaleString("en-us") %>&#36;</li>
             <li>Location: <%= listing.location %>, <%= listing.country %></li>
@@ -23,12 +23,12 @@
     </div>
   </div>
 </div>
-<% if(currUser && currUser._id.equals(listing.owner._id)){ %>
+<% if(currUser && currUser.id === listing.ownerId){ %>
   <div class="edit-delete d-flex gap-3 ">
-    <form method="get" action="/listings/<%= listing._id %>/edit">
+    <form method="get" action="/listings/<%= listing.id %>/edit">
       <button class="btn btn-dark add-btn" style="width: 130px;">Edit</button>
     </form>
-    <form method="post" action="/listings/<%= listing._id %>?_method=DELETE">
+    <form method="post" action="/listings/<%= listing.id %>?_method=DELETE">
       <button class="btn btn-dark" style="width: 120px;">Delete</button>
     </form>
   </div>
@@ -36,7 +36,7 @@
 <hr>
 <hr>
 <h4>Amenities</h4>
-<% if (listing.amenities.length === 0) { %>
+<% if (!listing.amenities || listing.amenities.length === 0) { %>
   <p>No amenities listed.</p>
 <% } else { %>
   <ul class="list-unstyled">
@@ -46,10 +46,10 @@
   </ul>
 <% } %>
 
-<% if (currUser && currUser._id.toString() !== listing.owner._id.toString()) { %>
+<% if (currUser && currUser.id !== listing.ownerId) { %>
   <hr>
   <h4>Book this listing</h4>
-  <form action="/listings/<%= listing._id %>/bookings" method="POST" class="row g-3">
+  <form action="/listings/<%= listing.id %>/bookings" method="POST" class="row g-3">
     <div class="col-md-6">
       <label for="checkIn" class="form-label">Check-in Date</label>
       <input type="date" name="checkIn" id="checkIn" class="form-control" required>
@@ -108,7 +108,7 @@
           <p class="card-text"><%= review.comment %></p>
           <!-- <p class="card-text"><%= review.rating %> stars</p> -->
         </div>
-        <form class="mb-3" method="post" action="/listings/<%=listing._id%>/reviews/<%=review._id%>?_method=DELETE">
+        <form class="mb-3" method="post" action="/listings/<%=listing.id%>/reviews/<%=review.id%>?_method=DELETE">
           <button class="btn btn-sm btn-dark">Delete</button>
         </form>
       </div>

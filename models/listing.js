@@ -51,7 +51,43 @@ async function findAll(){
 
 async function findByPk(id){
   const [rows] = await pool.query("SELECT * FROM listings WHERE id = :id", { id });
-  return rows[0] || null;
+  if (!rows[0]) return null;
+  
+  const listing = rows[0];
+  
+  // Get owner
+  if (listing.ownerId) {
+    const [ownerRows] = await pool.query("SELECT id, username, email FROM users WHERE id = :id", { id: listing.ownerId });
+    listing.owner = ownerRows[0] || null;
+  }
+  
+  // Get reviews with authors
+  const [reviewRows] = await pool.query(
+    `SELECT r.*, u.id as author_id, u.username as author_username 
+     FROM reviews r 
+     LEFT JOIN users u ON r.authorId = u.id 
+     WHERE r.ListingId = :id 
+     ORDER BY r.createdAt DESC`,
+    { id }
+  );
+  listing.reviews = reviewRows.map(r => ({
+    id: r.id,
+    comment: r.comment,
+    rating: r.rating,
+    createdAt: r.createdAt,
+    author: r.author_id ? { id: r.author_id, username: r.author_username } : null
+  }));
+  
+  // Get amenities
+  const [amenityRows] = await pool.query(
+    `SELECT a.* FROM amenities a 
+     INNER JOIN listing_amenities la ON a.id = la.AmenityId 
+     WHERE la.ListingId = :id`,
+    { id }
+  );
+  listing.amenities = amenityRows || [];
+  
+  return listing;
 }
 
 async function create(data){

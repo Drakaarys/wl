@@ -43,7 +43,7 @@ router.get("/:bookingId", isLoggedIn, wrapAsync(async (req, res) => {
     return res.redirect("/listings");
   }
 
-  res.render("bookings/show.ejs", { booking });
+  res.render("bookings/show.ejs", { booking, listing: booking.listing });
 }));
 
 // USER’s bookings

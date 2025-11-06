@@ -17,7 +17,7 @@
     <div class="row row-cols-lg-3 row-cols-md-2 row-cols-sm-1 g-4">
       <% listings.forEach(listing => { %>
         <div class="col">
-          <a href="/listings/<%= listing._id %>" class="listing-link text-decoration-none text-dark">
+          <a href="/listings/<%= listing.id %>" class="listing-link text-decoration-none text-dark">
             <div class="card listing-card">
               <img src="<%= listing.image || '/images/default.jpg' %>" class="card-img-top" alt="Listing Image" style="height:20rem; object-fit: cover;">
               <div class="card-body">

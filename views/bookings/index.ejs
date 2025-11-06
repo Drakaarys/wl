@@ -14,7 +14,7 @@
             <p style="margin-left: 15px;">Check-in: <%= booking.checkIn.toDateString() %></p>
             <p style="margin-left: 15px;">Check-out: <%= booking.checkOut.toDateString() %></p>
             <p style="margin-left: 15px;">Total: ₹<%= booking.totalPrice %></p>
-            <a href="/bookings/<%= booking._id %>" class="btn btn-outline-primary" style="margin-left: 15px; margin-bottom: 10px;">View Details</a>
+            <a href="/bookings/<%= booking.id %>" class="btn btn-outline-primary" style="margin-left: 15px; margin-bottom: 10px;">View Details</a>
           </div>
         </div>
       </div>

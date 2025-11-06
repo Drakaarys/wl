@@ -32,8 +32,7 @@ router.get("/new", isLoggedIn, wrapAsync(async (req, res) => {
 
 // CREATE
 router.post("/", isLoggedIn, validateListing, wrapAsync(async (req, res) => {
-    const payload = req.body.listing;
-    await Listing.create({ ...payload, ownerId: req.user.id });
+    await Listing.create({ ...req.body.listing, ownerId: req.user.id });
     req.flash("success", "New listing created successfully");
     res.redirect("/listings");
 }));
@@ -44,7 +43,6 @@ router.get("/search", wrapAsync(async (req, res) => {
     if (!city) return res.redirect("/listings");
 
     const listings = await Listing.searchByCity(city);
-
     res.render("listings/search.ejs", { listings, city });
 }));
 
@@ -55,16 +53,7 @@ router.get("/category/:categoryName", wrapAsync(async (req, res) => {
     res.render("listings/category.ejs", { listings, categoryName });
 }));
 
-// SHOW
-router.get("/:id", wrapAsync(async (req, res) => {
-    const { id } = req.params;
-    const listing = await Listing.findByPk(id);
-    if (!listing) {
-        req.flash("error", "The listing you requested does not exist");
-        return res.redirect("/listings");
-    }
-    res.render("listings/show.ejs", { listing });
-}));
+
 
 // EDIT
 router.get("/:id/edit", isLoggedIn, isOwner, wrapAsync(async (req, res) => {
@@ -88,4 +77,16 @@ router.delete("/:id", isLoggedIn, isOwner, wrapAsync(async (req, res) => {
     res.redirect("/listings");
 }));
 
+// SHOW
+router.get("/:id", wrapAsync(async (req, res) => {
+    const { id } = req.params;
+    const listing = await Listing.findByPk(id);
+
+    if (!listing) {
+        req.flash("error", "The listing you requested does not exist");
+        return res.redirect("/listings");
+    }
+
+    res.render("listings/show.ejs", { listing });
+}));
 module.exports = router;
