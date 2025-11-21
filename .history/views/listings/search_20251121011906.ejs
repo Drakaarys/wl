@@ -19,26 +19,19 @@
         <a href="/listings/<%= listing.id %>" class="listing-link text-decoration-none text-dark">
           <div class="card listing-card">
             <img 
-  src="<%= listing.image || '/images/default.jpg' %>" 
-  class="card-img-top" 
-  alt="Listing Image" 
-  style="height: 20rem; object-fit: cover;"
-  onerror="this.onerror=null; this.src='/images/default.jpg';"
-/>
-
+              src="<%= listing.image || '/images/default.jpg' %>" 
+              class="card-img-top" 
+              alt="Listing Image" 
+              style="height: 20rem; object-fit: cover;"
+              onerror="this.onerror=null; this.src='/images/default.jpg';"
+            />
 
             <div class="card-body">
               <h5 class="card-title"><%= listing.title %></h5>
               <p class="card-text">
-  <%
-    let priceNum = Number(listing.price);
-    let formattedPrice = !isNaN(priceNum)
-      ? priceNum.toLocaleString('en-IN')
-      : "Not Available";
-  %>
-  Price: ₹<%= formattedPrice %>
-</p>
-
+                <% let formattedPrice = typeof listing.price === 'number' ? listing.price.toLocaleString('en-IN') : 'Not Available'; %>
+                Price: ₹<%= formattedPrice %>
+              </p>
               <p class="card-text">Category: <%= listing.category %></p>
             </div>
           </div>
